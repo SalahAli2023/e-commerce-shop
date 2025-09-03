@@ -24,17 +24,23 @@
         <div class="row">
             <div class="offset-xl-1 col-lg-8">
                 <div class="about-details-cap mb-50">
-                    <h4>Our Mission</h4>
-                    <p>Consectetur adipiscing elit, sued do eiusmod tempor ididunt udfgt labore et dolore magna aliqua. Quis ipsum suspendisces gravida. Risus commodo viverra sebfd dho eiusmod tempor maecenas accumsan lacus. Risus commodo viverra sebfd dho eiusmod tempor maecenas accumsan lacus.
-                    </p>
-                    <p> Risus commodo viverra sebfd dho eiusmod tempor maecenas accumsan lacus. Risus commodo viverra sebfd dho eiusmod tempor maecenas accumsan.</p>
+                    <h4>{{ $title }}</h4>
+                    <p>{{ $description }}</p>
+                </div>
+                <div class="raw-html-content">
+                {!! $rawHtml !!}
                 </div>
 
                 <div class="about-details-cap mb-50">
-                    <h4>Our Vision</h4>
-                    <p>Consectetur adipiscing elit, sued do eiusmod tempor ididunt udfgt labore et dolore magna aliqua. Quis ipsum suspendisces gravida. Risus commodo viverra sebfd dho eiusmod tempor maecenas accumsan lacus. Risus commodo viverra sebfd dho eiusmod tempor maecenas accumsan lacus.
-                    </p>
-                    <p> Risus commodo viverra sebfd dho eiusmod tempor maecenas accumsan lacus. Risus commodo viverra sebfd dho eiusmod tempor maecenas accumsan.</p>
+                    @php
+                        // Using @php directive to execute PHP code
+                        $currentYear = date('Y');
+                        $yearsInBusiness = $currentYear - 2025;
+                        $author = 'Our Amazing Team';
+                    @endphp
+                
+                <p>© {{ $currentYear }} E-commerce Store. We've been in business for {{ $yearsInBusiness }} years.</p>
+                <p>Created by {{ $author }}.</p>
                 </div>
             </div>
         </div>
