@@ -1,9 +1,23 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StoreController;
 use App\Http\Controllers\ShopController;
 
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/shop', [ShopController::class, 'index']);
+
+Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+
+// Home page
+Route::get('/', [StoreController::class, 'index']);
+
+// Products pages
+Route::get('/products', [StoreController::class, 'products'])->name('products');
+Route::get('/product/{id}', [StoreController::class, 'productDetails'])->name('product.details');
+
+// Other pages
+Route::get('/cart', [StoreController::class, 'cart'])->name('cart');
+Route::get('/about', [StoreController::class, 'about'])->name('about');
+Route::get('/contact', [StoreController::class, 'contact'])->name('contact');
