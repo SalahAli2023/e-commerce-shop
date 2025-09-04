@@ -20,4 +20,41 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);// هذه الدالة تقوم بالبحث عن الايدي المطلوب واذا لم تجده ترجع خطأ 404
         return view('shop.product-details', compact('product'));
     }
+
+    // show form of adding a new product  
+    public function create()
+    {
+        return view('shop.create-product');
+    }
+
+    //To process the creation of a new product
+    public function store(Request $request)
+    {
+        // التحقق من صحة البيانات
+        $validated = $request->validate([
+            'name' => 'required|min:3|max:255',
+            'description' => 'required|min:10',
+            'price' => 'required|numeric|min:0',
+            'on_sale' => 'boolean',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        // To process the image upload
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
+
+        // create product
+        $product = Product::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'price' => $validated['price'],
+            'on_sale' => $request->has('on_sale'),
+            'image_path' => $imagePath
+        ]);
+
+        return redirect()->route('products.index')
+                        ->with('success', 'Product created successfully!');
+    }
 }
