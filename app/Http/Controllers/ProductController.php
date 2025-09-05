@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage; 
 
 class ProductController extends Controller
 {
@@ -101,5 +102,21 @@ class ProductController extends Controller
 
         return redirect()->route('products.index')
                         ->with('success', 'Product updated successfully!');
+    }
+
+    //  Delete product function
+    public function destroy($id)
+    {
+        $product = Product::findOrFail($id);
+        
+        // Delete image if is exist
+        if ($product->image_path) {
+            Storage::disk('public')->delete($product->image_path);
+        }
+        
+        $product->delete();
+        
+        return redirect()->route('products.index')
+                        ->with('success', 'Product deleted successfully!');
     }
 }
