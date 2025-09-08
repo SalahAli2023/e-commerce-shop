@@ -4,34 +4,42 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage; 
+use Illuminate\Support\Facades\Storage;
 
-class ProductController extends Controller
+class AdminController extends Controller
 {
-     // Show all products
+
+    // Display all products in admin interface
     public function index()
     {
-        $products = Product::all();
-        return view('shop.products', compact('products'));
+        $products = Product::paginate(10);
+        return view('admin.products.index', compact('products'));
     }
 
-    // Show single product
-    public function show($id)
-    {
-        $product = Product::findOrFail($id);// هذه الدالة تقوم بالبحث عن الايدي المطلوب واذا لم تجده ترجع خطأ 404
-        return view('shop.product-details', compact('product'));
-    }
-
-    // show form of adding a new product  
+    // Display form to create new product in admin interface
     public function create()
     {
-        return view('shop.create-product');
+        return view('admin.products.create');
     }
 
-    //To process the creation of a new product
+    // Display product details in admin interface
+    public function show($id)
+    {
+        $product = Product::findOrFail($id);
+        return view('admin.products.show', compact('product'));
+    }
+
+    // Display form to edit product in admin interface
+    public function edit($id)
+    {
+        $product = Product::findOrFail($id);
+        return view('admin.products.edit', compact('product'));
+    }
+
+    // معالجة إنشاء منتج جديد
     public function store(Request $request)
     {
-        // validation
+        // التحقق من صحة البيانات
         $validated = $request->validate([
             'name' => 'required|min:3|max:255',
             'description' => 'required|min:10',
@@ -40,13 +48,13 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        // To process the image upload
+        // معالجة رفع الصورة
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
         }
 
-        // create product
+        // إنشاء المنتج باستخدام fillable properties
         $product = Product::create([
             'name' => $validated['name'],
             'description' => $validated['description'],
@@ -55,23 +63,16 @@ class ProductController extends Controller
             'image_path' => $imagePath
         ]);
 
-        return redirect()->route('products.index')
+        return redirect()->route('admin.products.index')
                         ->with('success', 'Product created successfully!');
     }
 
-    // show form of updating a product 
-    public function edit($id)
-    {
-        $product = Product::findOrFail($id);
-        return view('products.edit-product', compact('product'));
-    }
-
-    //To process the update of a new product
+    // معالجة تحديث المنتج
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
         
-        // validation
+        // التحقق من صحة البيانات
         $validated = $request->validate([
             'name' => 'required|min:3|max:255',
             'description' => 'required|min:10',
@@ -80,9 +81,9 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        // To process the image upload
+        // معالجة رفع الصورة إذا تم توفيرها
         if ($request->hasFile('image')) {
-            // Delete old imag
+            // حذف الصورة القديمة إذا كانت موجودة
             if ($product->image_path) {
                 Storage::disk('public')->delete($product->image_path);
             }
@@ -91,7 +92,7 @@ class ProductController extends Controller
             $product->image_path = $imagePath;
         }
 
-        //  update product
+        // تحديث المنتج باستخدام fillable properties
         $product->update([
             'name' => $validated['name'],
             'description' => $validated['description'],
@@ -100,38 +101,23 @@ class ProductController extends Controller
             'image_path' => $product->image_path
         ]);
 
-        return redirect()->route('products.index')
+        return redirect()->route('admin.products.index')
                         ->with('success', 'Product updated successfully!');
     }
 
-    //  Delete product function
+    // حذف المنتج
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
         
-        // Delete image if is exist
+        // حذف الصورة إذا كانت موجودة
         if ($product->image_path) {
             Storage::disk('public')->delete($product->image_path);
         }
         
         $product->delete();
         
-        return redirect()->route('products.index')
+        return redirect()->route('admin.products.index')
                         ->with('success', 'Product deleted successfully!');
-    }
-
-    //Change sale state
-    public function toggleSale(Request $request, $id)
-    {
-        $product = Product::findOrFail($id);
-        
-        $product->update([
-            'on_sale' => $request->on_sale
-        ]);
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Product sale status updated successfully'
-        ]);
     }
 }

@@ -1,0 +1,202 @@
+/* /* Dashboard Styles */
+:root {
+    --sidebar-width: 260px;
+    --header-height: 60px;
+    --primary-color: #4e73df;
+    --secondary-color: #6f42c1;
+    --success-color: #1cc88a;
+    --info-color: #36b9cc;
+    --warning-color: #f6c23e;
+    --danger-color: #e74a3b;
+    --light-color: #f8f9fc;
+    --dark-color: #5a5c69;
+}
+
+body {
+    font-family: 'Nunito', 'Segoe UI', sans-serif;
+    background-color: #f8f9fc;
+}
+
+.dashboard-container {
+    display: flex;
+}
+
+/* Sidebar Styles */
+.dashboard-sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    /* top: 0;
+    left: 0; */
+    background: linear-gradient(180deg, var(--primary-color) 10%, var(--secondary-color) 100%);
+    color: white;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: all 0.3s;
+}
+
+.sidebar-header {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    font-weight: 700;
+}
+
+.sidebar-nav {
+    padding: 20px 0;
+}
+
+.sidebar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    padding: 12px 20px;
+    border-left: 3px solid transparent;
+    transition: all 0.3s;
+}
+
+.sidebar-nav .nav-link:hover,
+.sidebar-nav .nav-link.active {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left-color: white;
+}
+
+.sidebar-nav .nav-link i {
+    width: 20px;
+    text-align: center;
+}
+
+/* Main Content Styles */
+.main-content {
+    right: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+}
+
+.dashboard-header {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.content-wrapper {
+    padding: 20px;
+    min-height: calc(100vh - var(--header-height) - 60px);
+}
+
+/* Footer Styles */
+.dashboard-footer {
+    background-color: #212529;
+    padding: 15px 0;
+    border-top: 1px solid #e3e6f0;
+    color: #fff;
+    font-size: 0.9rem; 
+}
+
+/* Product Cards in Dashboard */
+.admin-product-card {
+    transition: transform 0.2s;
+    border: none;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.admin-product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+}
+
+/* Custom Buttons */
+.btn-admin {
+    border-radius: 0.35rem;
+    font-weight: 600;
+}
+
+.btn-admin-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.btn-admin-primary:hover {
+    background-color: #3a5bc7;
+    border-color: #3a5bc7;
+    color: white;
+}
+
+/* Tables in Dashboard */
+.admin-table {
+    background-color: white;
+    border-radius: 0.35rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.admin-table th {
+    background-color: var(--light-color);
+    color: var(--dark-color);
+    font-weight: 700;
+    padding: 12px 15px;
+}
+
+.admin-table td {
+    padding: 12px 15px;
+    vertical-align: middle;
+}
+
+/* Product Status in Table */
+.product-status-badge {
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: 700;
+    border-radius: 0.35rem;
+}
+
+.badge-sale {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.badge-regular {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+/* Admin Form */
+.admin-form {
+    background-color: white;
+    padding: 25px;
+    border-radius: 0.35rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.admin-form .form-label {
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.dashboard-wrapper {
+    display: flex;
+    flex: 1;
+}
+.dashboard-content {
+    flex: 1;
+    padding: 10px;
+    margin-left: 260px;
+    transition: margin-left 0.3s ease;
+}
+/* Sidebar */
+@media (max-width: 991.98px) {
+    .dashboard-sidebar {
+        position: fixed;
+        height: 100%;
+        transform: translateX(-100%);
+    }
+    .dashboard-sidebar.active {
+        transform: translateX(0);
+    }
+    .dashboard-content {
+        margin-left: 0;
+    }
+}
+
