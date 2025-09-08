@@ -63,7 +63,7 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::findOrFail($id);
-        return view('shop.edit-product', compact('product'));
+        return view('products.edit-product', compact('product'));
     }
 
     //To process the update of a new product
@@ -118,5 +118,20 @@ class ProductController extends Controller
         
         return redirect()->route('products.index')
                         ->with('success', 'Product deleted successfully!');
+    }
+
+    //Change sale state
+    public function toggleSale(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        
+        $product->update([
+            'on_sale' => $request->on_sale
+        ]);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Product sale status updated successfully'
+        ]);
     }
 }
