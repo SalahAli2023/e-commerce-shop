@@ -5,6 +5,7 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ContactController;
 
 // Route::get('/', function () {
 //     return view('welcome.blade');
@@ -50,3 +51,5 @@ Route::get('/admin/products/{id}/edit', [AdminController::class, 'edit'])->name(
 Route::put('/admin/products/{id}', [AdminController::class, 'update'])->name('products.update');
 Route::delete('/admin/products/{id}', [AdminController::class, 'destroy'])->name('products.destroy');
 Route::post('/products/{id}/toggle-sale', [AdminController::class, 'toggleSale'])->name('products.toggle-sale');
+
+Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
