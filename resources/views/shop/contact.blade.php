@@ -389,12 +389,12 @@
                 <h2 class="contact-title">Get in Touch</h2>
             </div>
             <div class="col-lg-8">
-                <form class="form-contact contact_form" action="{{ route('contact.submit') }}" method="post" id="contactForm" novalidate="novalidate">
+                <form class="form-contact contact_form" action="{{ route('contact.submit') }}" method="post" id="contactForm" novalidate="novalidate>
                     @csrf
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
-                                <textarea class="form-control w-100" name="message" id="message" cols="30" rows="9" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Message'" placeholder=" Enter Message">
+                                <textarea class="form-control w-100" name="message" id="message" cols="30" rows="9" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Message'" placeholder=" Enter Message" required>
                                     {{ old('message') }}
                                 </textarea>
                                 @error('message')
@@ -404,7 +404,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <input class="form-control valid" name="name" id="name" type="text" value="{{ old('name') }}" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter your name'" placeholder="Enter your name">
+                                <input class="form-control valid" name="name" id="name" type="text" value="{{ old('name') }}" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter your name'" placeholder="Enter your name" required>
                                 @error('name')
                                     <span class="error">{{ $message }}</span>
                                 @enderror
@@ -412,7 +412,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <input class="form-control valid" name="email" id="email" type="email" value="{{ old('email') }}" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter email address'" placeholder="Email">
+                                <input class="form-control valid" name="email" id="email" type="email" value="{{ old('email') }}" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter email address'" placeholder="Email" required>
                                 @error('email')
                                     <span class="error">{{ $message }}</span>
                                 @enderror
