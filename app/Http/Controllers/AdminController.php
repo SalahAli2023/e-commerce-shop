@@ -36,10 +36,10 @@ class AdminController extends Controller
         return view('admin.products.edit', compact('product'));
     }
 
-    // معالجة إنشاء منتج جديد
+    // Save the new 
     public function store(Request $request)
     {
-        // التحقق من صحة البيانات
+        // validation
         $validated = $request->validate([
             'name' => 'required|min:3|max:255',
             'description' => 'required|min:10',
@@ -48,13 +48,13 @@ class AdminController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        // معالجة رفع الصورة
+        // Processing image upload
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
         }
 
-        // إنشاء المنتج باستخدام fillable properties
+        // Create product using fillable properties
         $product = Product::create([
             'name' => $validated['name'],
             'description' => $validated['description'],
@@ -67,7 +67,7 @@ class AdminController extends Controller
                         ->with('success', 'Product created successfully!');
     }
 
-    // معالجة تحديث المنتج
+    // Product update processing
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -105,12 +105,12 @@ class AdminController extends Controller
                         ->with('success', 'Product updated successfully!');
     }
 
-    // حذف المنتج
+    // Delete product
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
         
-        // حذف الصورة إذا كانت موجودة
+        //
         if ($product->image_path) {
             Storage::disk('public')->delete($product->image_path);
         }
