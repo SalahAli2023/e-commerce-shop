@@ -61,13 +61,13 @@
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     
-                                    @can('update', $product)
+                                    @can('update', $product){{-- @can to show or hide the edit button. --}}
                                     <a href="{{ route('products.edit', $product->id) }}" class="btn btn-warning btn-sm" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     @endcan
                                     
-                                    @can('delete', $product)
+                                    @can('delete', $product) {{-- @can to show or hide the delete button. --}}
                                     <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
