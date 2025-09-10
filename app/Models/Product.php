@@ -8,11 +8,23 @@ use Illuminate\Support\Str;
 
 class Product extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'name',
         'description', 
         'price',
         'on_sale',
-        'image_path'
+        'image_path',
+        'category_id'
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }
