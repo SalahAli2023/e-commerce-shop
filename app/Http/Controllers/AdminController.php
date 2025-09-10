@@ -3,11 +3,56 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Gate;
 
 class AdminController extends Controller
 {
+
+
+    //Display the main control panel
+    public function dashboard()
+    {
+        // Check validity
+        if (!Gate::allows('access-admin-panel')) {
+            abort(403);
+        }
+
+        $stats = [
+            'total_products' => Product::count(),
+            'total_categories' => Category::count(),
+            'total_users' => User::count(),
+            'products_on_sale' => Product::where('on_sale', true)->count(),
+        ];
+
+        return view('admin.dashboard', compact('stats'));
+    }
+
+    //Show all products
+    public function products()
+    {
+        // Check validity
+        if (!Gate::allows('access-admin-panel')) {
+            abort(403);
+        }
+
+        $products = Product::with('category')->latest()->paginate(10);
+        return view('admin.products', compact('products'));
+    }
+
+    // Show all categories
+    public function categories()
+    {
+        // Check validity
+        if (!Gate::allows('access-admin-panel')) {
+            abort(403);
+        }
+
+        $categories = Category::withCount('products')->latest()->paginate(10);
+        return view('admin.categories', compact('categories'));
+    }
 
     // Display all products in admin interface
     public function index()
@@ -36,10 +81,10 @@ class AdminController extends Controller
         return view('admin.products.edit', compact('product'));
     }
 
-    // معالجة إنشاء منتج جديد
+    // Save the new 
     public function store(Request $request)
     {
-        // التحقق من صحة البيانات
+        // validation
         $validated = $request->validate([
             'name' => 'required|min:3|max:255',
             'description' => 'required|min:10',
@@ -48,13 +93,13 @@ class AdminController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        // معالجة رفع الصورة
+        // Processing image upload
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
         }
 
-        // إنشاء المنتج باستخدام fillable properties
+        // Create product using fillable properties
         $product = Product::create([
             'name' => $validated['name'],
             'description' => $validated['description'],
@@ -67,7 +112,7 @@ class AdminController extends Controller
                         ->with('success', 'Product created successfully!');
     }
 
-    // معالجة تحديث المنتج
+    // Product update processing
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -105,12 +150,12 @@ class AdminController extends Controller
                         ->with('success', 'Product updated successfully!');
     }
 
-    // حذف المنتج
+    // Delete product
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
         
-        // حذف الصورة إذا كانت موجودة
+        //
         if ($product->image_path) {
             Storage::disk('public')->delete($product->image_path);
         }

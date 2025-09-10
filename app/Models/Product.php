@@ -18,11 +18,13 @@ class Product extends Model
         'category_id'
     ];
 
+    //الحصول على الفئة المرتبطة بهذا المنتج.
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
-
+    
+    //الحصول على المراجعات المرتبطة بهذا المنتج.
     public function reviews()
     {
         return $this->hasMany(Review::class);
