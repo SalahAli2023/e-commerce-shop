@@ -25,13 +25,13 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        // تعريف بوابة للوصول إلى لوحة التحكم الإدارية
+        //Define a gateway to access the administrative control panel
         Gate::define('access-admin-panel', function ($user) {
             if ($user->is_admin) {
                 return true;
             }
             
-            // تسجيل محاولة الوصول غير المصرح بها
+            //// Log unauthorized access attempt
             Log::warning('Unauthorized access attempt to admin panel', [
                 'user_id' => $user->id,
                 'user_email' => $user->email,
