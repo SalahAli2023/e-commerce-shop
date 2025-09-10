@@ -26,15 +26,6 @@ Route::get('/about', [StoreController::class, 'about'])->name('about');
 Route::get('/contact', [StoreController::class, 'contact'])->name('contact');
 
 // Products pages
-
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::resource('products', AdminController::class);
-
-    // 
-    Route::post('/products/{id}/toggle-sale', [AdminController::class, 'toggleSale'])
-        ->name('products.toggle-sale');
-});
-
 // Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 // Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 // Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
@@ -43,7 +34,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 // Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
 // Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 
-Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+Route::get('/admin/products_dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
 Route::get('/admin/products/{id}', [AdminController::class, 'show'])->name('products.show');
 Route::get('/admin/products/create', [AdminController::class, 'create'])->name('products.create');
 Route::post('/admin/products', [AdminController::class, 'store'])->name('products.store');
@@ -51,5 +42,13 @@ Route::get('/admin/products/{id}/edit', [AdminController::class, 'edit'])->name(
 Route::put('/admin/products/{id}', [AdminController::class, 'update'])->name('products.update');
 Route::delete('/admin/products/{id}', [AdminController::class, 'destroy'])->name('products.destroy');
 Route::post('/products/{id}/toggle-sale', [AdminController::class, 'toggleSale'])->name('products.toggle-sale');
-
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
+
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    // Route::resource('products', AdminController::class);
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/products', [AdminController::class, 'products'])->name('products');
+    Route::get('/categories', [AdminController::class, 'categories'])->name('categories');
+
+});
