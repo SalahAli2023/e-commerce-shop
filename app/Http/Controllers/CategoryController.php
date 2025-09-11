@@ -20,7 +20,7 @@ class CategoryController extends Controller
         }
 
         $categories = Category::withCount('products')->latest()->paginate(10);
-        return view('admin.categories.index', compact('categories'));
+        return view('admin.categories', compact('categories'));
     }
 
     /**
@@ -57,7 +57,7 @@ class CategoryController extends Controller
             'slug' => Str::slug($validated['name'])
         ]);
 
-        return redirect()->route('admin.categories.index')
+        return redirect()->route('categories.index')
             ->with('success', 'Category created successfully!');
     }
 
@@ -111,7 +111,7 @@ class CategoryController extends Controller
             'slug' => Str::slug($validated['name'])
         ]);
 
-        return redirect()->route('admin.categories.index')
+        return redirect()->route('categories.index')
             ->with('success', 'Category updated successfully!');
     }
 
@@ -134,7 +134,7 @@ class CategoryController extends Controller
         // Delete the category
         $category->delete();
 
-        return redirect()->route('admin.categories.index')
+        return redirect()->route('categories.index')
             ->with('success', 'Category deleted successfully!');
     }
 }
