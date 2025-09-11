@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('shop.layouts.app')
 
 @section('title', $product['name'] . ' - E-commerce Store')
 
