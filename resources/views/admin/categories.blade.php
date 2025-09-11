@@ -6,13 +6,29 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Manage Categories</h1>
-        <button class="btn btn-primary btn-icon-split" data-toggle="modal" data-target="#addCategoryModal">
+        <a href="{{ route('categories.create') }}" class="btn btn-primary btn-icon-split">
             <span class="icon text-white-50">
                 <i class="fas fa-plus"></i>
             </span>
             <span class="text">Add New Category</span>
-        </button>
+        </a>
     </div>
+
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -27,6 +43,7 @@
                             <th>Name</th>
                             <th>Slug</th>
                             <th>Products Count</th>
+                            <th>Created At</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -36,19 +53,26 @@
                             <td>{{ $category->id }}</td>
                             <td>{{ $category->name }}</td>
                             <td>{{ $category->slug }}</td>
-                            <td>{{ $category->products_count }}</td>
+                            <td>
+                                <span class="badge bg-primary">{{ $category->products_count }}</span>
+                            </td>
+                            <td>{{ $category->created_at->format('M d, Y') }}</td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <a href="#" class="btn btn-info btn-sm" title="View Products">
+                                    <a href="{{ route('categories.show', $category->id) }}" 
+                                       class="btn btn-info btn-sm" title="View Details">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="#" class="btn btn-warning btn-sm" title="Edit">
+                                    <a href="{{ route('categories.edit', $category->id) }}" 
+                                       class="btn btn-warning btn-sm" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="#" method="POST" class="d-inline">
+                                    <form action="{{ route('categories.destroy', $category->id) }}" 
+                                            method="POST" class="d-inline delete-form">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" title="Delete" onclick="return confirm('Are you sure you want to delete this category?')">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Delete" 
+                                                onclick="return confirm('Are you sure you want to delete this category?')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
@@ -60,47 +84,26 @@
                 </table>
             </div>
             
-            <!-- الترقيم -->
-            <div class="d-flex justify-content-center">
+            <!-- Pagination -->
+            <div class="d-flex justify-content-center mt-4">
                 {{ $categories->links() }}
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal for Add Category -->
-<div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="#" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="categoryName">Category Name</label>
-                        <input type="text" class="form-control" id="categoryName" name="name" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Category</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 @endsection
 
 @section('scripts')
 <script>
-    // تفعيل تلميح الأدوات
+    // Enable tooltips
     $(document).ready(function() {
         $('[title]').tooltip();
+    });
+
+    // Auto-focus on category name input when modal is shown
+    $('#addCategoryModal').on('shown.bs.modal', function () {
+        $('#categoryName').focus();
     });
 </script>
 @endsection

@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\StoreController;
 
 Route::get('/', function () {
@@ -48,6 +49,8 @@ Route::middleware(['auth', 'can:access-admin-panel'])->prefix('admin')->name('ad
 // Product paths (protected by permissions)
 Route::resource('products', ProductController::class)->middleware(['auth', 'can:access-admin-panel']);
 
+// Product paths (protected by permissions)
+Route::resource('categories', CategoryController::class)->middleware(['auth', 'can:access-admin-panel']);
 
 // Mail and notification test paths
 Route::middleware(['auth', 'can:access-admin-panel'])->prefix('test')->group(function () {
