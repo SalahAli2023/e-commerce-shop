@@ -32,7 +32,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
             'on_sale' => 'boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         $product = Product::create($validated);
@@ -49,11 +49,10 @@ class ProductController extends Controller
             'price' => 'sometimes|numeric|min:0',
             'category_id' => 'sometimes|exists:categories,id',
             'on_sale' => 'boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-
+        
         $product->update($validated);
-
         return new ProductResource($product);
     }
 
@@ -61,7 +60,6 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
-
         return response()->json([
             'message' => 'Product deleted successfully'
         ], Response::HTTP_OK);

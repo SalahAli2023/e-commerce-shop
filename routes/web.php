@@ -4,10 +4,25 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StoreController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+//shop
+Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+
+// Home page
+Route::get('/', [ProductController::class, 'index'])->name('home');
+
+// Other pages
+Route::get('/cart', [StoreController::class, 'cart'])->name('cart');
+Route::get('/about', [StoreController::class, 'about'])->name('about');
+Route::get('/contact', [StoreController::class, 'contact'])->name('contact');
+
+// Products pages
+Route::get('/products', [StoreController::class, 'products'])->name('products');
+Route::get('/product/{id}', [StoreController::class, 'productDetails'])->name('product.details');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -19,12 +34,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
 //Administrative Control Panel Paths (Protected by Authentication and Privileges)
 Route::middleware(['auth', 'can:access-admin-panel'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/products', [AdminController::class, 'products'])->name('products');
     Route::get('/categories', [AdminController::class, 'categories'])->name('categories');
+    
+    // Toggle product sale status
+    Route::post('/admin/products/{id}/toggle-sale', [ProductController::class, 'toggleSale'])
+        ->name('admin.products.toggle-sale');
 });
 
 // Product paths (protected by permissions)
