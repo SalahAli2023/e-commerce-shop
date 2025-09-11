@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage; 
 
@@ -11,21 +12,15 @@ class ProductController extends Controller
      // Show all products
     public function index()
     {
-        $products = Product::all();
-        return view('shop.products', compact('products'));
+        $products = Product::paginate(10);
+        return view('admin.products.index', compact('products'));
     }
 
-    // Show single product
-    public function show($id)
-    {
-        $product = Product::findOrFail($id);// هذه الدالة تقوم بالبحث عن الايدي المطلوب واذا لم تجده ترجع خطأ 404
-        return view('shop.product-details', compact('product'));
-    }
-
-    // show form of adding a new product  
+    // Display form to create new product in admin interface
     public function create()
     {
-        return view('shop.create-product');
+        $categories = Category::all();
+        return view('admin.products.create', compact('categories'));
     }
 
     //To process the creation of a new product
@@ -36,37 +31,48 @@ class ProductController extends Controller
             'name' => 'required|min:3|max:255',
             'description' => 'required|min:10',
             'price' => 'required|numeric|min:0',
+            'category_id' => 'required|exists:categories,id',
             'on_sale' => 'boolean',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        // To process the image upload
+        // Processing image upload
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
         }
 
-        // create product
+        // Create product using fillable properties
         $product = Product::create([
             'name' => $validated['name'],
             'description' => $validated['description'],
             'price' => $validated['price'],
+            'category_id' => $validated['category_id'],
             'on_sale' => $request->has('on_sale'),
             'image_path' => $imagePath
         ]);
 
-        return redirect()->route('products.index')
+        return redirect()->route('admin.products')
                         ->with('success', 'Product created successfully!');
     }
 
-    // show form of updating a product 
+    // Display product details in admin interface
+    public function show($id)
+    {
+        // Find the product with category relationship loaded
+        $product = Product::with('category')->findOrFail($id);  
+        return view('admin.products.show', compact('product'));
+    }
+
+    // Display form to edit product in admin interface
     public function edit($id)
     {
         $product = Product::findOrFail($id);
-        return view('products.edit-product', compact('product'));
+        $categories = Category::all();
+        return view('admin.products.edit', compact('product','categories'));
     }
 
-    //To process the update of a new product
+    // Product update processing
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -76,6 +82,7 @@ class ProductController extends Controller
             'name' => 'required|min:3|max:255',
             'description' => 'required|min:10',
             'price' => 'required|numeric|min:0',
+            'category_id' => 'required|exists:categories,id',
             'on_sale' => 'boolean',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
@@ -91,16 +98,17 @@ class ProductController extends Controller
             $product->image_path = $imagePath;
         }
 
-        //  update product
+        // update product using fillable properties
         $product->update([
             'name' => $validated['name'],
             'description' => $validated['description'],
             'price' => $validated['price'],
+            'category_id' => $validated['category_id'],
             'on_sale' => $request->has('on_sale'),
             'image_path' => $product->image_path
         ]);
-
-        return redirect()->route('products.index')
+        
+        return redirect()->route('admin.products')
                         ->with('success', 'Product updated successfully!');
     }
 
@@ -116,22 +124,30 @@ class ProductController extends Controller
         
         $product->delete();
         
-        return redirect()->route('products.index')
+        return redirect()->route('admin.products')
                         ->with('success', 'Product deleted successfully!');
     }
 
     //Change sale state
     public function toggleSale(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
-        
-        $product->update([
-            'on_sale' => $request->on_sale
-        ]);
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Product sale status updated successfully'
-        ]);
+        try {
+            $product = Product::findOrFail($id);
+            
+            $product->update([
+                'on_sale' => $request->on_sale
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Product sale status updated successfully',
+                'on_sale' => $product->on_sale
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating product status: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
