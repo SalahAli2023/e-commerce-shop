@@ -79,7 +79,7 @@
                                 </a>
                             </li>
                             <li>
-                                <form action="{{ route('home') }}" method="GET">
+                                <form action="{{ route('logout')}}" method="Post">
                                     @csrf
                                     <button type="submit" class="dropdown-item">
                                         <i class="fas fa-sign-out-alt me-2"></i>Logout

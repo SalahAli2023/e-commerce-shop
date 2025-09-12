@@ -14,7 +14,9 @@ Route::get('/', function () {
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 
 // Home page
-Route::get('/', [ProductController::class, 'index'])->name('home');
+Route::get('/home',  function () { 
+    return view('dashboard');
+})->name('home');
 
 // Other pages
 Route::get('/cart', [StoreController::class, 'cart'])->name('cart');
@@ -25,7 +27,7 @@ Route::get('/contact', [StoreController::class, 'contact'])->name('contact');
 Route::get('/products', [StoreController::class, 'products'])->name('products');
 Route::get('/product/{id}', [StoreController::class, 'productDetails'])->name('product.details');
 
-Route::get('/dashboard', function () {
+Route::get('/', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
